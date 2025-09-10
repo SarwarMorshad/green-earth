@@ -16,11 +16,79 @@
     />
     <link rel="stylesheet" href="./styles.css" />
   </head>
-  <body class="font-inter">
+  <body class="font-inter w-11/12 mx-auto">
     <header>
       <!-- ! Nav Bar -->
-      <nav></nav>
+      <nav>
+        <div class="navbar bg-[#15803D] shadow-sm text-white p-4 sticky top-0 z-10 rounded-b-lg">
+          <div class="navbar-start">
+            <div class="dropdown">
+              <div tabindex="0" role="button" class="btn btn-ghost lg:hidden">
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  class="h-5 w-5"
+                  fill="none"
+                  viewBox="0 0 24 24"
+                  stroke="currentColor"
+                >
+                  <path
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                    stroke-width="2"
+                    d="M4 6h16M4 12h8m-8 6h16"
+                  />
+                </svg>
+              </div>
+              <ul
+                tabindex="0"
+                class="menu menu-sm dropdown-content bg-base-100 rounded-box z-1 mt-3 w-52 p-2 shadow"
+              >
+                <li><a>About</a></li>
+                <li>
+                  <a>Gallery</a>
+                </li>
+                <li><a>Plant a Tree</a></li>
+              </ul>
+            </div>
+            <div class="flex items-center gap-2">
+              <img src="./assets/plant.png" alt="plant" class="w-14 h-14" />
+              <a class="text-3xl font-semibold cursor-pointer">Green Earth</a>
+            </div>
+          </div>
+          <div class="navbar-center hidden lg:flex">
+            <ul class="menu menu-horizontal px-1">
+              <li><a>About</a></li>
+              <li>
+                <a>Gallery</a>
+              </li>
+              <li><a>Plant a Tree</a></li>
+            </ul>
+          </div>
+          <div class="navbar-end">
+            <a class="btn bg-[#FACC15] hover:bg-[#eab308] px-8 rounded-full">Plant a Tree</a>
+          </div>
+        </div>
+      </nav>
     </header>
+
+    <!-- ! Hero -->
+    <section class="hero-container">
+      <div
+        class="hero flex flex-col lg:flex-row items-center justify-between text-end gap-8 lg:gap-16 mb-24 bg-[#CFF0DC]"
+      >
+        <div class="hidden lg:block justify-end">
+          <img src="./assets/hero-leaf1.png" alt="leaf1" />
+        </div>
+        <div class="text-center space-y-6 py-8 px-4">
+          <h1 class="text-4xl font-bold">Plant a Tree, Grow a Future</h1>
+          <p>Join our mission to plant 1 million trees and make the Earth greener for future generations.</p>
+          <button class="btn bg-[#FACC15] hover:bg-[#eab308] px-8 rounded-full">Get Involved</button>
+        </div>
+        <div class="hidden lg:block">
+          <img src="./assets/hero-leaf2.png" alt="leaf2" />
+        </div>
+      </div>
+    </section>
     <script src="./script/script.js"></script>
   </body>
 </html>
