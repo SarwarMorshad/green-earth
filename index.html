@@ -16,7 +16,7 @@
     />
     <link rel="stylesheet" href="./styles.css" />
   </head>
-  <body class="font-inter w-11/12 mx-auto">
+  <body class="font-inter w-11/12 mx-auto bg-[#F0FDF4]">
     <header>
       <!-- ! Nav Bar -->
       <nav>
@@ -87,6 +87,29 @@
         <div class="hidden lg:block">
           <img src="./assets/hero-leaf2.png" alt="leaf2" />
         </div>
+      </div>
+    </section>
+
+    <!-- ! Main Section -->
+    <section>
+      <div>
+        <h1 class="text-4xl font-bold text-center mb-8">Choose Your Trees</h1>
+      </div>
+      <div class="main-container flex flex-col lg:flex-row gap-8 p-4">
+        <div class="left-container">
+          <h1 class="text-xl font-bold mb-2">Categories</h1>
+          <div>
+            <ul id="categories-container">
+              <!-- Categories will be dynamically loaded here -->
+            </ul>
+          </div>
+        </div>
+        <div class="middle-container">
+          <p>middle</p>
+        </div>
+        <aside class="right-container">
+          <p>Right</p>
+        </aside>
       </div>
     </section>
     <script src="./script/script.js"></script>
