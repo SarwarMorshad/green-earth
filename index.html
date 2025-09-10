@@ -96,7 +96,8 @@
         <h1 class="text-4xl font-bold text-center mb-8">Choose Your Trees</h1>
       </div>
       <div class="main-container flex flex-col lg:flex-row gap-8 p-4">
-        <div class="left-container">
+        <!-- !Categories -->
+        <div class="left-container lg:ml-16">
           <h1 class="text-xl font-bold mb-2">Categories</h1>
           <div>
             <ul id="categories-container">
@@ -104,8 +105,22 @@
             </ul>
           </div>
         </div>
-        <div class="middle-container">
-          <p>middle</p>
+
+        <!-- !Plants Card center -->
+        <div
+          id="plant-cards-container"
+          class="cards-container grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6"
+        >
+          <div class="card bg-base-100 shadow-md p-4 rounded-lg w-[350px] max-h-[400px]">
+            <img src="" alt="" class="" />
+            <h1 class="text-lg font-bold">Mango Tree</h1>
+            <p>Description</p>
+            <div class="flex items-center justify-between mt-2">
+              <a href="#">Fruit Tree</a>
+              <p>৳ <span>Price</span></p>
+            </div>
+            <button class="btn bg-[#15803D] hover:bg-[#166534] px-8 rounded-full">Get Involved</button>
+          </div>
         </div>
         <aside class="right-container">
           <p>Right</p>
