@@ -1,4 +1,13 @@
 /***********************
+ * Globals
+ ***********************/
+let cart = []; // in-memory cart (clears on refresh)
+let allPlants = []; // full list from API (all or filtered)
+let currentPlants = []; // current page slice (used by addToCart)
+let currentPage = 1;
+const PAGE_SIZE = 6;
+
+/***********************
  * Categories
  ***********************/
 
@@ -59,7 +68,6 @@ const manageSpinner = (show) => {
 /***********************
  * Data loaders
  ***********************/
-
 const loadAllPlants = () => {
   manageSpinner(true);
   fetch("https://openapi.programming-hero.com/api/plants")
@@ -93,25 +101,39 @@ const loadPlants = (category_id) => {
 };
 
 /***********************
- * Products grid
+ * Products grid (Paged)
  ***********************/
+// ! Entry point when new data arrives: store, reset page, render
 const displayPlants = (plants) => {
-  currentPlants = plants || [];
+  allPlants = plants || [];
+  currentPage = 1;
+  renderCurrentPage();
+  renderPagination();
+};
 
+// ! Render the current page slice
+const renderCurrentPage = () => {
   const container = document.getElementById("plant-cards-container");
   container.innerHTML = "";
 
-  if (!plants || plants.length === 0) {
+  if (!allPlants || allPlants.length === 0) {
     container.innerHTML = `
       <div class="col-span-full place-self-center text-center">
         <p class="text-center"><i class="fa-solid fa-triangle-exclamation text-2xl"></i></p>
         <p>No plants found in this category.</p>
         <h1 class="font-bold text-xl mt-6">Try another category</h1>
       </div>`;
+    currentPlants = [];
+    renderPagination(); // clear/hide pager if needed
     return;
   }
 
-  plants.forEach((plant, idx) => {
+  const start = (currentPage - 1) * PAGE_SIZE;
+  const end = start + PAGE_SIZE;
+  const slice = allPlants.slice(start, end);
+  currentPlants = slice; // used by addToCart(index)
+
+  slice.forEach((plant, idx) => {
     const card = document.createElement("div");
     card.innerHTML = `
       <div class="bg-white p-5 rounded-lg shadow-md w-[350px] max-h-[520px]">
@@ -136,14 +158,55 @@ const displayPlants = (plants) => {
   });
 };
 
+// ! Render paginator (Prev, numbers, Next)
+const renderPagination = () => {
+  const pager = document.getElementById("pagination");
+  if (!pager) return;
+
+  const total = allPlants.length;
+  const totalPages = Math.ceil(total / PAGE_SIZE) || 0;
+
+  if (totalPages <= 1) {
+    pager.innerHTML = "";
+    return;
+  }
+
+  let html = `<div class="join">`;
+
+  // Prev
+  const prevDisabled = currentPage === 1 ? "btn-disabled" : "";
+  html += `<button class="join-item btn ${prevDisabled}" onclick="prevPage()">«</button>`;
+
+  // Page numbers (simple: show all)
+  for (let p = 1; p <= totalPages; p++) {
+    const active = p === currentPage ? "btn-active" : "";
+    html += `<button class="join-item btn ${active}" onclick="goToPage(${p})">${p}</button>`;
+  }
+
+  // Next
+  const nextDisabled = currentPage === totalPages ? "btn-disabled" : "";
+  html += `<button class="join-item btn ${nextDisabled}" onclick="nextPage()">»</button>`;
+
+  html += `</div>`;
+
+  pager.innerHTML = html;
+};
+
+const goToPage = (p) => {
+  const totalPages = Math.ceil((allPlants?.length || 0) / PAGE_SIZE) || 0;
+  if (p < 1 || p > totalPages) return;
+  currentPage = p;
+  renderCurrentPage();
+  renderPagination();
+};
+
+const prevPage = () => goToPage(currentPage - 1);
+const nextPage = () => goToPage(currentPage + 1);
+
 /***********************
  * Cart (in-memory)
  ***********************/
-let cart = []; // resets on refresh
-let currentPlants = []; // last rendered list for easy addToCart
-
-// Draw the cart into the right sidebar (.cart-items)
-// Replace your current renderCart with this version
+// Draw the cart into the sidebar (.cart-items) and modal (#cart-modal-items)
 const renderCart = () => {
   const targets = [
     document.querySelector(".cart-items"), // sidebar
@@ -155,7 +218,6 @@ const renderCart = () => {
   let totalQty = 0;
   let totalPrice = 0;
 
-  // Build the inner HTML once
   let html = "";
 
   if (isEmpty) {
@@ -179,22 +241,20 @@ const renderCart = () => {
             <button class="btn btn-xs" onclick="incrementCartAt(${i})">+</button>
             <button class="btn btn-xs btn-error" onclick="removeCartAt(${i})">✕</button>
           </div>
-        </div>
-      `;
+        </div>`;
       })
       .join("");
 
     html = rows + `<div class="text-right font-semibold mt-2">Total: ৳ ${totalPrice}</div>`;
   }
 
-  // Paint both targets
   targets.forEach((el) => (el.innerHTML = html));
 
-  // Update both badges if present
+  // Update badges (navbar / optional others)
   const badgeEls = [
-    // document.getElementById("cart-count"), // sidebar (optional)
-    // document.getElementById("cart-count-modal"), // modal (optional)
-    document.getElementById("cart-count-nav"), // navbar badge
+    document.getElementById("cart-count-nav"), // navbar badge (indicator)
+    document.getElementById("cart-count"), // sidebar title badge (optional)
+    document.getElementById("cart-count-modal"), // modal title badge (optional)
   ].filter(Boolean);
 
   const qtyStr = String(totalQty);
@@ -206,18 +266,20 @@ const incrementCartAt = (i) => {
   cart[i].qty += 1;
   renderCart();
 };
+
 const decrementCartAt = (i) => {
   if (!cart[i]) return;
   cart[i].qty = Math.max(0, cart[i].qty - 1);
   if (cart[i].qty === 0) removeCartAt(i);
   else renderCart();
 };
+
 const removeCartAt = (i) => {
   cart.splice(i, 1);
   renderCart();
 };
 
-// Beginner-friendly: add by index, merge by name
+// Beginner-friendly: add by index, merge by name (good enough for now)
 const addToCart = (index) => {
   const p = currentPlants[index];
   if (!p) return;
@@ -238,9 +300,9 @@ const addToCart = (index) => {
 };
 
 function openCartModal() {
-  // re-render cart into the modal container, then open it
-  renderCart(); // (we'll make renderCart update both places)
-  document.getElementById("cart-modal").showModal();
+  renderCart();
+  const dlg = document.getElementById("cart-modal");
+  if (dlg && dlg.showModal) dlg.showModal();
 }
 
 /***********************
