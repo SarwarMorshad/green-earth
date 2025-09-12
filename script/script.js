@@ -93,79 +93,6 @@ const loadPlants = (category_id) => {
 };
 
 /***********************
- * Cart (in-memory)
- ***********************/
-let cart = []; // resets on refresh
-let currentPlants = []; // last rendered list for easy addToCart
-
-// Draw the cart into the right sidebar (.cart-items)
-const renderCart = () => {
-  const list = document.querySelector(".cart-items");
-  if (!list) return;
-
-  list.innerHTML = "";
-
-  if (cart.length === 0) {
-    list.innerHTML = `<p class="text-gray-500">Your cart is empty.</p>`;
-    const badge = document.getElementById("cart-count");
-    if (badge) badge.textContent = "0";
-    return;
-  }
-
-  let totalQty = 0;
-  let totalPrice = 0;
-
-  cart.forEach((item, i) => {
-    totalQty += item.qty;
-    totalPrice += (item.price || 0) * item.qty;
-
-    const row = document.createElement("div");
-    row.className = "flex items-center justify-between bg-white p-3 rounded-md shadow-sm mb-2";
-    row.innerHTML = `
-      <div class="flex items-center gap-3">
-        <img src="${item.image}" class="w-12 h-12 object-cover rounded" alt="${item.name}">
-        <div>
-          <p class="font-medium">${item.name}</p>
-          <p class="text-sm opacity-70">৳ ${item.price || 0} × ${item.qty}</p>
-        </div>
-      </div>
-      <div class="flex items-center gap-2 ml-4 mr-2">
-        <button class="btn btn-xs" onclick="decrementCartAt(${i})">−</button>
-        <button class="btn btn-xs" onclick="incrementCartAt(${i})">+</button>
-        <button class="btn btn-xs btn-error" onclick="removeCartAt(${i})">✕</button>
-      </div>
-    `;
-    list.appendChild(row);
-  });
-
-  const badge = document.getElementById("cart-count");
-  if (badge) badge.textContent = String(totalQty);
-
-  const totalRow = document.createElement("div");
-  totalRow.className = "text-right font-semibold mt-2";
-  totalRow.textContent = `Total: ৳ ${totalPrice}`;
-  list.appendChild(totalRow);
-};
-
-const incrementCartAt = (i) => {
-  if (!cart[i]) return;
-  cart[i].qty += 1;
-  renderCart();
-};
-
-const decrementCartAt = (i) => {
-  if (!cart[i]) return;
-  cart[i].qty = Math.max(0, cart[i].qty - 1);
-  if (cart[i].qty === 0) removeCartAt(i);
-  else renderCart();
-};
-
-const removeCartAt = (i) => {
-  cart.splice(i, 1);
-  renderCart();
-};
-
-/***********************
  * Products grid
  ***********************/
 const displayPlants = (plants) => {
@@ -209,6 +136,85 @@ const displayPlants = (plants) => {
   });
 };
 
+/***********************
+ * Cart (in-memory)
+ ***********************/
+let cart = []; // resets on refresh
+let currentPlants = []; // last rendered list for easy addToCart
+
+// Draw the cart into the right sidebar (.cart-items)
+// Replace your current renderCart with this version
+const renderCart = () => {
+  const targets = [
+    document.querySelector(".cart-items"), // sidebar
+    document.getElementById("cart-modal-items"), // modal
+  ].filter(Boolean);
+
+  const isEmpty = cart.length === 0;
+
+  let totalQty = 0;
+  let totalPrice = 0;
+
+  // Build the inner HTML once
+  let html = "";
+
+  if (isEmpty) {
+    html = `<p class="text-gray-500">Your cart is empty.</p>`;
+  } else {
+    const rows = cart
+      .map((item, i) => {
+        totalQty += item.qty;
+        totalPrice += (item.price || 0) * item.qty;
+        return `
+        <div class="flex items-center justify-between bg-white p-3 rounded-md shadow-sm mb-2">
+          <div class="flex items-center gap-3">
+            <img src="${item.image}" class="w-12 h-12 object-cover rounded" alt="${item.name}">
+            <div>
+              <p class="font-medium">${item.name}</p>
+              <p class="text-sm opacity-70">৳ ${item.price || 0} × ${item.qty}</p>
+            </div>
+          </div>
+          <div class="flex items-center gap-2">
+            <button class="btn btn-xs" onclick="decrementCartAt(${i})">−</button>
+            <button class="btn btn-xs" onclick="incrementCartAt(${i})">+</button>
+            <button class="btn btn-xs btn-error" onclick="removeCartAt(${i})">✕</button>
+          </div>
+        </div>
+      `;
+      })
+      .join("");
+
+    html = rows + `<div class="text-right font-semibold mt-2">Total: ৳ ${totalPrice}</div>`;
+  }
+
+  // Paint both targets
+  targets.forEach((el) => (el.innerHTML = html));
+
+  // Update both badges if present
+  const badgeEls = [
+    document.getElementById("cart-count"), // optional in sidebar title
+    document.getElementById("cart-count-modal"), // in modal title
+  ].filter(Boolean);
+  const qtyStr = String(totalQty);
+  badgeEls.forEach((b) => (b.textContent = isEmpty ? "0" : qtyStr));
+};
+
+const incrementCartAt = (i) => {
+  if (!cart[i]) return;
+  cart[i].qty += 1;
+  renderCart();
+};
+const decrementCartAt = (i) => {
+  if (!cart[i]) return;
+  cart[i].qty = Math.max(0, cart[i].qty - 1);
+  if (cart[i].qty === 0) removeCartAt(i);
+  else renderCart();
+};
+const removeCartAt = (i) => {
+  cart.splice(i, 1);
+  renderCart();
+};
+
 // Beginner-friendly: add by index, merge by name
 const addToCart = (index) => {
   const p = currentPlants[index];
@@ -228,6 +234,12 @@ const addToCart = (index) => {
 
   renderCart();
 };
+
+function openCartModal() {
+  // re-render cart into the modal container, then open it
+  renderCart(); // (we'll make renderCart update both places)
+  document.getElementById("cart-modal").showModal();
+}
 
 /***********************
  * Initial boot

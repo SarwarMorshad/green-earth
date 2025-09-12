@@ -19,7 +19,7 @@
     <link rel="stylesheet" href="./styles.css" />
   </head>
   <body class="font-inter w-11/12 mx-auto bg-[#F0FDF4]">
-    <header>
+    <header class="sticky top-0 z-50">
       <!-- ! Nav Bar -->
       <nav>
         <div class="navbar bg-[#15803D] shadow-sm text-white p-4 sticky top-0 z-10 rounded-b-lg">
@@ -67,13 +67,36 @@
             </ul>
           </div>
           <div class="navbar-end">
-            <a class="btn bg-[#FACC15] hover:bg-[#eab308] px-4 text-xl rounded-full"
-              ><i class="fa-solid fa-cart-shopping"></i
-            ></a>
+            <button
+              onclick="openCartModal()"
+              class="btn bg-[#FACC15] hover:bg-[#eab308] px-4 text-xl rounded-full"
+            >
+              <span class="sr-only">View Cart</span>
+              <i class="fa-solid fa-cart-shopping"></i>
+            </button>
           </div>
         </div>
       </nav>
     </header>
+    <!-- ! Card Modal -->
+    <dialog id="cart-modal" class="modal modal-bottom sm:modal-middle">
+      <div class="modal-box">
+        <div class="flex items-center justify-between">
+          <h3 class="font-bold text-lg">
+            Your Cart <span id="cart-count-modal" class="badge badge-secondary align-middle">0</span>
+          </h3>
+          <form method="dialog">
+            <button class="btn btn-sm btn-circle">✕</button>
+          </form>
+        </div>
+
+        <div id="cart-modal-items" class="mt-4"></div>
+
+        <div class="modal-action">
+          <button class="btn btn-success w-full rounded-full text-white">Checkout</button>
+        </div>
+      </div>
+    </dialog>
 
     <!-- ! Hero -->
     <section class="hero-container">
@@ -126,12 +149,14 @@
             <button class="btn bg-[#15803D] hover:bg-[#166534] px-8 rounded-full">Get Involved</button>
           </div>
         </div>
-        <aside class="right-container w-full lg:w-80">
-          <h1 class="text-xl font-bold mb-2">
-            Your Cart <span><i class="fa-solid fa-cart-shopping"></i></span>
+        <aside id="cart-panel" class="right-container hidden lg:block w-full lg:w-80">
+          <h1 class="text-xl font-bold mb-2 text-center">
+            Your Cart <span id="cart-count" class="badge badge-secondary align-middle items-center">0</span>
           </h1>
-          <div id="cart-items" class="cart-items"></div>
-          <button class="btn bg-[#15803D] hover:bg-[#166534] px-8 text-white w-full mt-6">Checkout</button>
+          <div class="cart-items"></div>
+          <button class="btn bg-[#15803D] hover:bg-[#166534] w-full rounded-full text-white mt-6">
+            Checkout
+          </button>
         </aside>
       </div>
     </section>
