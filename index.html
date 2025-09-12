@@ -43,7 +43,7 @@
               </div>
               <ul
                 tabindex="0"
-                class="menu menu-sm dropdown-content bg-base-100 rounded-box z-1 mt-3 w-52 p-2 shadow"
+                class="menu menu-sm dropdown-content bg-[#15803D] rounded-box z-1 mt-3 w-52 p-2 shadow"
               >
                 <li><a>About</a></li>
                 <li>
@@ -66,14 +66,19 @@
               <li><a>Plant a Tree</a></li>
             </ul>
           </div>
-          <div class="navbar-end">
-            <button
-              onclick="openCartModal()"
-              class="btn bg-[#FACC15] hover:bg-[#eab308] px-4 text-xl rounded-full"
-            >
-              <span class="sr-only">View Cart</span>
-              <i class="fa-solid fa-cart-shopping"></i>
-            </button>
+          <div class="navbar-end mr-4">
+            <div class="indicator">
+              <span id="cart-count-nav" class="indicator-item badge badge-success indicator-end indicator-top"
+                >0</span
+              >
+              <button
+                onclick="openCartModal()"
+                class="btn bg-[#FACC15] hover:bg-[#eab308] px-4 text-xl rounded-full"
+                aria-label="View Cart"
+              >
+                <i class="fa-solid fa-cart-shopping"></i>
+              </button>
+            </div>
           </div>
         </div>
       </nav>
@@ -82,9 +87,7 @@
     <dialog id="cart-modal" class="modal modal-bottom sm:modal-middle">
       <div class="modal-box">
         <div class="flex items-center justify-between">
-          <h3 class="font-bold text-lg">
-            Your Cart <span id="cart-count-modal" class="badge badge-secondary align-middle">0</span>
-          </h3>
+          <h3 class="font-bold text-lg">Your Cart</h3>
           <form method="dialog">
             <button class="btn btn-sm btn-circle">✕</button>
           </form>
@@ -122,7 +125,9 @@
       <div>
         <h1 class="text-4xl font-bold text-center mb-8">Choose Your Trees</h1>
       </div>
-      <div class="main-container flex flex-col lg:flex-row gap-8 p-4">
+      <div
+        class="main-container flex flex-col lg:flex-row gap-8 p-4 justify-center items-center lg:items-start"
+      >
         <!-- !Categories -->
         <div class="left-container lg:ml-16">
           <h1 class="text-xl font-bold mb-2">Categories</h1>
@@ -136,7 +141,7 @@
         <!-- !Plants Card center -->
         <div
           id="plant-cards-container"
-          class="cards-container grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6"
+          class="cards-container grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 justify-items-center"
         >
           <div class="card bg-base-100 shadow-md p-4 rounded-lg w-[350px] max-h-[400px]">
             <img src="" alt="" class="" />
@@ -149,14 +154,12 @@
             <button class="btn bg-[#15803D] hover:bg-[#166534] px-8 rounded-full">Get Involved</button>
           </div>
         </div>
+
+        <!-- ! Cart -->
         <aside id="cart-panel" class="right-container hidden lg:block w-full lg:w-80">
-          <h1 class="text-xl font-bold mb-2 text-center">
-            Your Cart <span id="cart-count" class="badge badge-secondary align-middle items-center">0</span>
-          </h1>
+          <h1 class="text-xl font-bold mb-2 text-center">Your Cart</h1>
           <div class="cart-items"></div>
-          <button class="btn bg-[#15803D] hover:bg-[#166534] w-full rounded-full text-white mt-6">
-            Checkout
-          </button>
+          <button class="btn bg-[#15803D] hover:bg-[#166534] w-full text-white mt-6">Checkout</button>
         </aside>
       </div>
     </section>

@@ -192,11 +192,13 @@ const renderCart = () => {
 
   // Update both badges if present
   const badgeEls = [
-    document.getElementById("cart-count"), // optional in sidebar title
-    document.getElementById("cart-count-modal"), // in modal title
+    // document.getElementById("cart-count"), // sidebar (optional)
+    // document.getElementById("cart-count-modal"), // modal (optional)
+    document.getElementById("cart-count-nav"), // navbar badge
   ].filter(Boolean);
+
   const qtyStr = String(totalQty);
-  badgeEls.forEach((b) => (b.textContent = isEmpty ? "0" : qtyStr));
+  badgeEls.forEach((b) => (b.textContent = cart.length === 0 ? "0" : qtyStr));
 };
 
 const incrementCartAt = (i) => {
