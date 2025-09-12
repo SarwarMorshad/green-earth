@@ -14,6 +14,8 @@
       href="https://fonts.googleapis.com/css2?family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&display=swap"
       rel="stylesheet"
     />
+    <!-- font Awesome -->
+    <script src="https://kit.fontawesome.com/364257c701.js" crossorigin="anonymous"></script>
     <link rel="stylesheet" href="./styles.css" />
   </head>
   <body class="font-inter w-11/12 mx-auto bg-[#F0FDF4]">
@@ -65,7 +67,9 @@
             </ul>
           </div>
           <div class="navbar-end">
-            <a class="btn bg-[#FACC15] hover:bg-[#eab308] px-8 rounded-full">Plant a Tree</a>
+            <a class="btn bg-[#FACC15] hover:bg-[#eab308] px-4 text-xl rounded-full"
+              ><i class="fa-solid fa-cart-shopping"></i
+            ></a>
           </div>
         </div>
       </nav>
@@ -122,11 +126,12 @@
             <button class="btn bg-[#15803D] hover:bg-[#166534] px-8 rounded-full">Get Involved</button>
           </div>
         </div>
-        <aside class="right-container">
-          <h1 class="text-xl font-bold mb-2">Your Cart</h1>
-          <div class="cart-items"></div>
-          <div id="cart-total" class="font-bold mt-4"></div>
-          <button class="btn bg-[#15803D] hover:bg-[#166534] px-8 rounded-full">Checkout</button>
+        <aside class="right-container w-full lg:w-80">
+          <h1 class="text-xl font-bold mb-2">
+            Your Cart <span><i class="fa-solid fa-cart-shopping"></i></span>
+          </h1>
+          <div id="cart-items" class="cart-items"></div>
+          <button class="btn bg-[#15803D] hover:bg-[#166534] px-8 text-white w-full mt-6">Checkout</button>
         </aside>
       </div>
     </section>
