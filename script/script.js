@@ -56,20 +56,45 @@ const clearActiveButtons = () => {
   buttons.forEach((button) => button.classList.remove("btn-active"));
 };
 
-/***********************
- * Spinner (optional)
- ***********************/
-const manageSpinner = (show) => {
-  const spinner = document.getElementById("spinner");
-  if (!spinner) return; // if you didn't add spinner HTML, just ignore
-  spinner.classList.toggle("hidden", !show);
+// Render N skeleton cards inside #plant-cards-container
+const renderPlantSkeletons = (n = 6) => {
+  const container = document.getElementById("plant-cards-container");
+  if (!container) return;
+
+  // clear grid + pager while loading
+  container.innerHTML = "";
+  const pager = document.getElementById("pagination");
+  if (pager) pager.innerHTML = "";
+
+  for (let i = 0; i < n; i++) {
+    const card = document.createElement("div");
+    card.innerHTML = `
+      <div class="bg-white p-5 rounded-lg shadow-md w-[350px] max-h-[520px]">
+        <div class="animate-pulse flex flex-col gap-4">
+          <!-- image placeholder -->
+          <div class="w-full h-[250px] bg-slate-300 rounded-md"></div>
+
+          <!-- title + short line -->
+          <div class="w-48 h-6 bg-slate-300 rounded-md"></div>
+          <div class="w-28 h-4 bg-slate-300 rounded-md"></div>
+
+          <!-- lines like category/price/button area -->
+          <div class="h-7 bg-slate-300 w-full rounded-md"></div>
+          <div class="h-7 bg-slate-300 w-full rounded-md"></div>
+          <div class="h-7 bg-slate-300 w-1/2 rounded-md"></div>
+        </div>
+      </div>
+    `;
+    container.appendChild(card);
+  }
 };
 
 /***********************
  * Data loaders
  ***********************/
+// All plants
 const loadAllPlants = () => {
-  manageSpinner(true);
+  renderPlantSkeletons(6); // or PAGE_SIZE if you defined it
   fetch("https://openapi.programming-hero.com/api/plants")
     .then((res) => res.json())
     .then((json) => {
@@ -80,12 +105,12 @@ const loadAllPlants = () => {
     .catch((err) => {
       console.error("Failed to load all plants:", err);
       displayPlants([]);
-    })
-    .finally(() => manageSpinner(false));
+    });
 };
 
+// By category
 const loadPlants = (category_id) => {
-  manageSpinner(true);
+  renderPlantSkeletons(6); // or PAGE_SIZE
   fetch(`https://openapi.programming-hero.com/api/category/${category_id}`)
     .then((res) => res.json())
     .then((json) => {
@@ -96,8 +121,7 @@ const loadPlants = (category_id) => {
     .catch((err) => {
       console.error("Failed to load plants by category:", err);
       displayPlants([]);
-    })
-    .finally(() => manageSpinner(false));
+    });
 };
 
 /***********************
@@ -139,10 +163,11 @@ const renderCurrentPage = () => {
       <div class="bg-white p-5 rounded-lg shadow-md w-[350px] max-h-[520px]">
         <img src="${plant.image}" alt="${plant.name || "Plant"}"
              class="w-full h-[250px] rounded-md object-cover" />
-        <button 
-        class="font-bold text-lg mt-4 text-left underline-offset-4 hover:underline" onclick="showPlantDetails(${
-          plant.id
-        })"> ${plant.name || ""}
+        <button
+          class="font-bold text-lg mt-4 text-left hover:cursor-pointer hover:text-[#15803D]"
+          onclick="showPlantDetails(${plant.id})"
+        >
+          ${plant.name || ""}
         </button>
 
         <p class="text-sm mt-3 [display:-webkit-box] [-webkit-line-clamp:2] [-webkit-box-orient:vertical] overflow-hidden"
@@ -152,7 +177,9 @@ const renderCurrentPage = () => {
 
         <div class="flex items-center justify-between mt-4 mb-4">
           <span class="bg-[#DCFCE7] text-[#15803D] p-2 rounded-md">${plant.category || ""}</span>
-          <p>৳ <span>${plant.price ?? ""}</span></p>
+          <p class="text-lg font-semibold"><span class="text-lg font-extrabold">৳</span> <span>${
+            plant.price ?? ""
+          }</span></p>
         </div>
         <button onclick="addToCart(${idx})" class="btn bg-[#15803D] text-white w-full">
           Add to Cart
