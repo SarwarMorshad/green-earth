@@ -395,6 +395,23 @@ const removeCartAt = (i) => {
   renderCart();
 };
 
+function showToast(message, variant = "success") {
+  // variant: "success" | "info" | "warning" | "error"
+  const root = document.getElementById("toast-root");
+  if (!root) return;
+
+  const el = document.createElement("div");
+  el.className = `alert alert-${variant} shadow`;
+  el.innerHTML = `<span>${message}</span>`;
+  root.appendChild(el);
+
+  // auto-hide after 2.2s with a fade
+  setTimeout(() => {
+    el.classList.add("opacity-0", "transition-opacity", "duration-300");
+    setTimeout(() => el.remove(), 300);
+  }, 2200);
+}
+
 // Beginner-friendly: add by index, merge by name (good enough for now)
 const addToCart = (index) => {
   const p = currentPlants[index];
@@ -413,6 +430,7 @@ const addToCart = (index) => {
   }
 
   renderCart();
+  showToast(`${p.name || "Plant"} added to cart`, "success"); // <- toast
 };
 
 function openCartModal() {
