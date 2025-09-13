@@ -139,7 +139,11 @@ const renderCurrentPage = () => {
       <div class="bg-white p-5 rounded-lg shadow-md w-[350px] max-h-[520px]">
         <img src="${plant.image}" alt="${plant.name || "Plant"}"
              class="w-full h-[250px] rounded-md object-cover" />
-        <h1 class="font-bold text-lg mt-4">${plant.name || ""}</h1>
+        <button 
+        class="font-bold text-lg mt-4 text-left underline-offset-4 hover:underline" onclick="showPlantDetails(${
+          plant.id
+        })"> ${plant.name || ""}
+        </button>
 
         <p class="text-sm mt-3 [display:-webkit-box] [-webkit-line-clamp:2] [-webkit-box-orient:vertical] overflow-hidden"
            title="${plant.description || ""}">
@@ -202,6 +206,91 @@ const goToPage = (p) => {
 
 const prevPage = () => goToPage(currentPage - 1);
 const nextPage = () => goToPage(currentPage + 1);
+
+// Cache for fetched plant details so we don't re-fetch if re-opened
+const plantCache = {};
+
+// Open + load plant details into the modal
+function showPlantDetails(id) {
+  const dlg = document.getElementById("plant-modal");
+  const body = document.getElementById("plant-modal-body");
+
+  if (!dlg || !body) return;
+
+  // show modal immediately with a loader
+  body.innerHTML = `
+    <div class="flex justify-center py-8">
+      <span class="loading loading-spinner loading-lg"></span>
+    </div>`;
+  dlg.showModal();
+
+  // Serve from cache if available
+  if (plantCache[id]) {
+    body.innerHTML = renderPlantDetailsHTML(plantCache[id]);
+    return;
+  }
+
+  // Fetch from API
+  fetch(`https://openapi.programming-hero.com/api/plant/${id}`)
+    .then((res) => res.json())
+    .then((json) => {
+      const p = json.plants || json.plant || {};
+      plantCache[id] = p; // cache it
+      body.innerHTML = renderPlantDetailsHTML(p);
+    })
+    .catch((err) => {
+      console.error("Failed to load plant details:", err);
+      body.innerHTML = `<p class="text-error">Failed to load details. Please try again.</p>`;
+    });
+}
+
+// Renders the inner HTML for the details panel
+function renderPlantDetailsHTML(p) {
+  const name = p.name || "Plant";
+  const price = Number(p.price) || 0;
+  const img = p.image || "";
+  const cat = p.category || "";
+  const desc = p.description || "No description available.";
+
+  return `
+    <div class="flex flex-col sm:flex-row gap-4">
+      <img src="${img}" alt="${name}" class="w-40 h-40 object-cover rounded">
+      <div>
+        <h3 class="text-xl font-bold mb-1">${name}</h3>
+        <div class="mb-2 flex items-center gap-2">
+          <span class="badge badge-success">${cat}</span>
+          <span class="font-semibold">৳ ${price}</span>
+        </div>
+        <p class="text-sm leading-relaxed">${desc}</p>
+      </div>
+    </div>
+
+    <div class="modal-action">
+      <button class="btn btn-success" onclick="addFromDetails(${p.id})">Add to Cart</button>
+      <button class="btn" onclick="document.getElementById('plant-modal').close()">Close</button>
+    </div>
+  `;
+}
+
+// Add to cart from the details modal (uses cached details)
+function addFromDetails(id) {
+  const p = plantCache[id] || (allPlants || []).find((pl) => pl.id == id);
+  if (!p) return;
+
+  const found = cart.find((item) => item.name === p.name);
+  if (found) {
+    found.qty += 1;
+  } else {
+    cart.push({
+      name: p.name || "Plant",
+      price: Number(p.price) || 0,
+      image: p.image || "",
+      qty: 1,
+    });
+  }
+
+  renderCart(); // keep your cart UI in sync
+}
 
 /***********************
  * Cart (in-memory)
