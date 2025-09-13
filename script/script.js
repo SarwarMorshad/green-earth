@@ -286,7 +286,7 @@ function renderPlantDetailsHTML(p) {
         <h3 class="text-xl font-bold mb-1">${name}</h3>
         <div class="mb-2 flex items-center gap-2">
           <span class="badge badge-success">${cat}</span>
-          <span class="font-semibold">৳ ${price}</span>
+          <span class="font-bold"><span class="text-lg font-extrabold">৳</span> ${price}</span>
         </div>
         <p class="text-sm leading-relaxed">${desc}</p>
       </div>
