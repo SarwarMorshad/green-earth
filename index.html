@@ -18,6 +18,7 @@
     <script src="https://kit.fontawesome.com/364257c701.js" crossorigin="anonymous"></script>
     <!-- Favicon -->
     <link rel="icon" type="image/x-icon" href="./assets/plant.png" />
+    <link rel="stylesheet" href="./styles.css" />
   </head>
   <body class="font-inter w-11/12 mx-auto bg-[#F0FDF4]">
     <header class="sticky top-0 z-50">
@@ -210,27 +211,60 @@
     </section>
 
     <!-- ! Our Impact -->
-    <section class="bg-[#CFF0DC] mb-36 p-8">
+    <section class="bg-[#CFF0DC] p-8">
       <div class="mb-8">
         <h1 class="text-4xl font-bold text-center">Our Impact</h1>
       </div>
       <div
         class="impact-container flex flex-col lg:flex-row gap-8 py-4 justify-center items-center lg:items-start pb-[30px]"
       >
-        <div class="flex flex-col justify-center items-center bg-white rounded-lg w-[450px] h-[200px]">
+        <div
+          class="flex flex-col justify-center items-center bg-white rounded-lg w-[300px] h-[170px] lg:w-[450px] lg:h-[200px]"
+        >
           <h1 class="text-4xl font-bold">500k+</h1>
           <p>Trees Planted</p>
         </div>
-        <div class="flex flex-col justify-center items-center bg-white rounded-lg w-[450px] h-[200px]">
+        <div
+          class="flex flex-col justify-center items-center bg-white rounded-lg w-[300px] h-[170px] lg:w-[450px] lg:h-[200px]"
+        >
           <h1 class="text-4xl font-bold">120+</h1>
           <p>Countries Involved</p>
         </div>
-        <div class="flex flex-col justify-center items-center bg-white rounded-lg w-[450px] h-[200px]">
+        <div
+          class="flex flex-col justify-center items-center bg-white rounded-lg w-[300px] h-[170px] lg:w-[450px] lg:h-[200px]"
+        >
           <h1 class="text-4xl font-bold">30+</h1>
           <p>Countries Reached</p>
         </div>
       </div>
     </section>
+
+    <!-- ! Donate Now -->
+    <section class="bg-[#166534] p-8">
+      <div class="mb-8">
+        <h1 class="text-4xl font-bold text-center text-white">Plant A Tree Today</h1>
+      </div>
+      <div
+        class="bg-[#15803D] *:rounded-lg p-8 flex flex-col gap-6 justify-center items-center w-[300px] lg:w-[650px] mx-auto rounded-lg"
+      >
+        <input type="text" placeholder="Your Name" class="input w-full" />
+        <input type="text" placeholder="Your Email Address" class="input w-full" />
+
+        <select id="color-select" class="select w-full" aria-label="Choose a color">
+          <option disabled selected>Number of Trees</option>
+          <option>1</option>
+          <option>5</option>
+          <option>10</option>
+        </select>
+        <button class="btn bg-[#FACC15] hover:bg-[#eab308] px-8 rounded-full w-full">Donate Now</button>
+      </div>
+    </section>
+    <!--  ! Footer -->
+    <footer class="bg-[#14532D] text-white text-center p-4">
+      <div>
+        <p>© 2025 Green Earth. All Rights Reserved.</p>
+      </div>
+    </footer>
 
     <!-- ! Toasts -->
     <div
