@@ -6,6 +6,8 @@ let allPlants = []; // full list from API (all or filtered)
 let currentPlants = []; // current page slice (used by addToCart)
 let currentPage = 1;
 const PAGE_SIZE = 6;
+let basePlants = []; // original order from API
+let sortOrder = "none"; // 'none' | 'asc' | 'desc'
 
 /***********************
  * Categories
@@ -129,11 +131,41 @@ const loadPlants = (category_id) => {
  ***********************/
 // ! Entry point when new data arrives: store, reset page, render
 const displayPlants = (plants) => {
-  allPlants = plants || [];
-  currentPage = 1;
+  basePlants = plants || [];
+  applySort(); // compute allPlants from basePlants + sortOrder
+  currentPage = 1; // reset to first page when dataset changes
   renderCurrentPage();
   renderPagination();
 };
+
+// ! Sort plants by price
+const priceOf = (p) => {
+  // Coerce to number; treat missing/invalid as 0 (you can change to Infinity if you prefer)
+  const n = Number(p?.price);
+  return Number.isFinite(n) ? n : 0;
+};
+const applySort = () => {
+  // start from original API order
+  allPlants = basePlants.slice();
+
+  if (sortOrder === "asc") {
+    allPlants.sort((a, b) => priceOf(a) - priceOf(b));
+  } else if (sortOrder === "desc") {
+    allPlants.sort((a, b) => priceOf(b) - priceOf(a));
+  }
+};
+
+const refreshAfterSort = () => {
+  applySort();
+  currentPage = 1; // go back to page 1 after changing sort
+  renderCurrentPage();
+  renderPagination();
+};
+
+document.getElementById("sort-price")?.addEventListener("change", (e) => {
+  sortOrder = e.target.value; // 'none' | 'asc' | 'desc'
+  refreshAfterSort();
+});
 
 // ! Render the current page slice
 const renderCurrentPage = () => {
