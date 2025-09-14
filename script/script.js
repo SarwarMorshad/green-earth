@@ -194,9 +194,7 @@ const renderPagination = () => {
   const pager = document.getElementById("pagination");
   if (!pager) return;
 
-  const total = allPlants.length;
-  const totalPages = Math.ceil(total / PAGE_SIZE) || 0;
-
+  const totalPages = Math.ceil((allPlants.length || 0) / PAGE_SIZE) || 0;
   if (totalPages <= 1) {
     pager.innerHTML = "";
     return;
@@ -204,22 +202,18 @@ const renderPagination = () => {
 
   let html = `<div class="join">`;
 
-  // Prev
-  const prevDisabled = currentPage === 1 ? "btn-disabled" : "";
-  html += `<button class="join-item btn ${prevDisabled}" onclick="prevPage()">«</button>`;
+  const prevDisabled = currentPage === 1 ? "disabled" : "";
+  html += `<button class="join-item btn" ${prevDisabled} onclick="prevPage()">«</button>`;
 
-  // Page numbers (simple: show all)
   for (let p = 1; p <= totalPages; p++) {
     const active = p === currentPage ? "btn-active" : "";
     html += `<button class="join-item btn ${active}" onclick="goToPage(${p})">${p}</button>`;
   }
 
-  // Next
-  const nextDisabled = currentPage === totalPages ? "btn-disabled" : "";
-  html += `<button class="join-item btn ${nextDisabled}" onclick="nextPage()">»</button>`;
+  const nextDisabled = currentPage === totalPages ? "disabled" : "";
+  html += `<button class="join-item btn" ${nextDisabled} onclick="nextPage()">»</button>`;
 
   html += `</div>`;
-
   pager.innerHTML = html;
 };
 
